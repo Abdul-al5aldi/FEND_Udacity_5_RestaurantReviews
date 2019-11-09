@@ -1,3 +1,6 @@
+console.log('--- Inside SW ----');
+
+
 let cacheName = 'resturants_Cache';
 
 self.addEventListener('install', function (event) {
