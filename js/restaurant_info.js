@@ -22,7 +22,7 @@ initMap = () => {
         scrollWheelZoom: false
       });
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
-        mapboxToken: '<your MAPBOX API KEY HERE>',
+        mapboxToken: api_token,
         maxZoom: 18,
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
           '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -86,9 +86,17 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
-  const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  const image = document.getElementById("restaurant-img");
+  image.className = "restaurant-img";
+  const imgurlbase = DBHelper.imageUrlForRestaurant(restaurant, "banners");
+  const imgurl1x = imgurlbase + "_1x.jpg";
+  const imgurl2x = imgurlbase + "_2x.jpg";
+  /*
+  image.src = imgurl1x;
+  image.srcset = `${imgurl1x} 500w, ${imgurl2x} 800w`;
+  */
+ image.src = DBHelper.imageUrlForRestaurant(restaurant);
+ image.alt = restaurant.name + " restaurant promotional image";
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -110,11 +118,11 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
     const row = document.createElement('tr');
 
     const day = document.createElement('td');
-    day.innerHTML = key;
+    day.innerHTML = key.trim();
     row.appendChild(day);
 
     const time = document.createElement('td');
-    time.innerHTML = operatingHours[key];
+    time.innerHTML = operatingHours[key].trim();
     row.appendChild(time);
 
     hours.appendChild(row);
@@ -150,6 +158,7 @@ createReviewHTML = (review) => {
   const li = document.createElement('li');
   const name = document.createElement('p');
   name.innerHTML = review.name;
+  name.className = "restaurant-review-user";
   li.appendChild(name);
 
   const date = document.createElement('p');
@@ -173,7 +182,13 @@ createReviewHTML = (review) => {
 fillBreadcrumb = (restaurant=self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
-  li.innerHTML = restaurant.name;
+
+  const a = document.createElement("a");
+  a.href = window.location;
+  a.innerHTML = restaurant.name;
+  a.setAttribute("aria-current", "page");
+  li.appendChild(a);
+
   breadcrumb.appendChild(li);
 }
 
